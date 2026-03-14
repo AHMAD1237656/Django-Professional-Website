@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<section class="section" id="home">
+    <h1>Welcome to Our Product</h1>
+    <p>Discover the elegance of our handcrafted wooden pen—designed for those who appreciate timeless craftsmanship and
+        writing comfort.</p>
+
+    {% if messages %}
+    <div class="alert-box">
+        {% for message in messages %}
+        <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="home-image-wrapper">
+        <img src="{% static 'images/wooden_pen.jpg' %}" alt="Wooden Pen" class="home-img">
+        <div class="btn-wrapper">
+            <a href="{% url 'products' %}" class="btn btn-primary mt-4">Explore Products</a>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="about">
+    <h2>About the Product</h2>
+    <p>Our wooden pen is crafted from premium Sheesham wood, known for its rich texture and durability. Each pen is
+        handmade by skilled artisans who shape, polish, and assemble every piece with precision.</p>
+    <ul>
+        <li>🌿 Eco-friendly materials sourced locally</li>
+        <li>✍️ Smooth ink flow with refillable cartridge</li>
+        <li>🎁 Comes in a premium gift box with optional engraving</li>
+        <li>🧵 Polished finish with ergonomic grip for long writing sessions</li>
+        <li>🛠️ Quality-tested for durability and ink consistency</li>
+    </ul>
+    <a href="{% url 'about' %}" class="btn btn-outline-primary mt-3">Learn More</a>
+</section>
+
+<section class="section" id="services">
+    <h2>Our Services</h2>
+    <p>We offer a complete experience around our product—from customization to delivery.</p>
+
+    <div class="card-grid">
+        <div class="card">
+            <h3>🖋️ Custom Engraving</h3>
+            <p>Personalize your pen with initials, names, or short messages. Laser-etched for precision and durability.
+            </p>
+        </div>
+        <div class="card">
+            <h3>🎁 Gift Packaging</h3>
+            <p>Elegant boxes, ribbons, and personalized notes available for birthdays, anniversaries, and corporate
+                gifting.</p>
+        </div>
+        <div class="card">
+            <h3>🚚 Nationwide Delivery</h3>
+            <p>Fast and secure delivery across Pakistan within 3–5 working days. Tracking and support included.</p>
+        </div>
+        <div class="card">
+            <h3>📦 Bulk & Corporate Orders</h3>
+            <p>Special pricing and branding options for companies, schools, and events. Custom logos available.</p>
+        </div>
+        <div class="card">
+            <h3>📞 Customer Support</h3>
+            <p>Available via WhatsApp and email for queries, updates, and custom requests. We respond within 24 hours.
+            </p>
+        </div>
+        <div class="card">
+            <h3>📸 Product Photography</h3>
+            <p>High-quality images for your custom orders. We provide styled shots for social media and catalog use.</p>
+        </div>
+        <div class="card">
+            <h3>🧾 Invoice & Documentation</h3>
+            <p>Need formal invoices or documentation for bulk orders? We provide GST-compliant billing and receipts.</p>
+        </div>
+        <div class="card">
+            <h3>🌐 Online Order Tracking</h3>
+            <p>Track your order status in real-time. Get updates via SMS and email from dispatch to delivery.</p>
+        </div>
+    </div>
+
+    <!-- ✅ Button properly wrapped and spaced -->
+    <div class="btn-wrapper">
+        <a href="{% url 'services' %}" class="btn btn-outline-primary mt-4">View All Services</a>
+    </div>
+</section>
+
+<section class="section" id="feedback">
+    <h2>💬 Customer Feedback</h2>
+
+    {% if messages %}
+    <div class="alert-box">
+        {% for message in messages %}
+        <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <form class="feedback-form" action="{% url 'submit_feedback' %}" method="post">
+        {% csrf_token %}
+        <div class="form-step">
+            <label for="name" class="form-label">Your Name</label>
+            <input type="text" name="name" id="name" class="form-control" required>
+        </div>
+        <div class="form-step">
+            <label for="email" class="form-label">Your Email</label>
+            <input type="email" name="email" id="email" class="form-control" required>
+        </div>
+        <div class="form-step">
+            <label for="rating" class="form-label">Rate your experience</label>
+            <select name="rating" id="rating" class="form-select" required>
+                <option value="" disabled selected>Select rating</option>
+                <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+                <option value="4">⭐⭐⭐⭐ Very Good</option>
+                <option value="3">⭐⭐⭐ Good</option>
+                <option value="2">⭐⭐ Fair</option>
+                <option value="1">⭐ Poor</option>
+            </select>
+        </div>
+        <div class="form-step">
+            <label for="comments" class="form-label">Your Comments</label>
+            <textarea name="comments" id="comments" class="form-control" rows="4" required></textarea>
+        </div>
+        <div class="d-grid mt-4">
+            <button type="submit" class="btn btn-success btn-lg">Send Feedback 💌</button>
+        </div>
+    </form>
+</section>
+
+<section class="section" id="product-collection">
+    <h2>🛍️ Our Full Product Collection</h2>
+    <p>Browse all our handcrafted pens and accessories below.</p>
+
+    <div class="card-grid">
+        {% for product in products %}
+        <div class="card">
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img">
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.description }}</p>
+            <p><strong>Price:</strong> PKR {{ product.price }}</p>
+            <button class="order-btn" onclick="openOrderForm('{{ product.name }}')">Order Now</button>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- ✅ Popup Order Form -->
+<div id="orderPopup" class="popup-overlay" style="display:none;">
+    <div class="popup-box">
+        <h3>Place Your Order</h3>
+        <form method="post" action="{% url 'place_order' %}">
+            {% csrf_token %}
+            <input type="text" name="name" placeholder="Your Name" required>
+            <input type="email" name="email" placeholder="Your Email" required>
+            <input type="text" name="product" id="popupProduct" readonly>
+            <input type="number" name="quantity" placeholder="Quantity" required>
+            <textarea name="message" placeholder="Message (optional)"></textarea>
+            <button type="submit" class="btn btn-success mt-2">Submit Order</button>
+            <button type="button" onclick="closeOrderForm()" class="btn btn-outline-danger mt-2">Cancel</button>
+        </form>
+    </div>
+</div>
+
+<!-- ✅ Auto-hide success message -->
+<script>
+    setTimeout(() => {
+        const alert = document.querySelector('.alert-box');
+        if (alert) alert.style.display = 'none';
+    }, 3000);
+</script>
+
+<!-- ✅ Popup Form JS -->
+<script>
+    function openOrderForm(productName) {
+        document.getElementById('orderPopup').style.display = 'flex';
+        document.getElementById('popupProduct').value = productName;
+    }
+    function closeOrderForm() {
+        document.getElementById('orderPopup').style.display = 'none';
+    }
+</script>
+{% endblock %}
